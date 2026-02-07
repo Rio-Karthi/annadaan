@@ -8,11 +8,11 @@ export default async function MyPostsPage() {
     const { userId } = await auth();
     if (!userId) return <div>Unauthorized</div>;
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!userId) return <div>Unauthorized</div>;
 
     const posts = await prisma.foodPost.findMany({
         where: {
-            donorId: user?.id
+            donorId: userId
         },
         include: {
             requests: {
