@@ -45,7 +45,7 @@ export function Hero({ isLoggedIn }: HeroProps) {
                     >
                         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
                             <TextReveal text="Connect. Share." />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">
+                            <span>
                                 <TextReveal text="Eliminate Hunger." />
                             </span>
                         </h1>
