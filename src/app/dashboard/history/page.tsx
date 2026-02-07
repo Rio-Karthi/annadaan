@@ -7,13 +7,13 @@ export default async function HistoryPage() {
     const { userId } = await auth();
     if (!userId) return <div>Unauthorized</div>;
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!userId) return <div>Unauthorized</div>;
 
     const transactions = await prisma.transaction.findMany({
         where: {
             OR: [
-                { donorId: user?.id },
-                { receiverId: user?.id }
+                { donorId: userId },
+                { receiverId: userId }
             ]
         },
         include: {
@@ -46,11 +46,11 @@ export default async function HistoryPage() {
                                 </div>
                                 <div>
                                     <span className="text-muted-foreground">Role:</span>
-                                    <span className="font-semibold ml-2">{tx.donorId === user?.id ? 'Donor' : 'Receiver'}</span>
+                                    <span className="font-semibold ml-2">{tx.donorId === userId ? 'Donor' : 'Receiver'}</span>
                                 </div>
                                 <div>
                                     <span className="text-muted-foreground">Other Party:</span>
-                                    <span className="font-semibold ml-2">{tx.donorId === user?.id ? tx.receiver.name : tx.donor.name}</span>
+                                    <span className="font-semibold ml-2">{tx.donorId === userId ? tx.receiver.name : tx.donor.name}</span>
                                 </div>
                             </div>
                         </CardContent>

@@ -1,9 +1,9 @@
+import CircleLoader from '@/components/ui/circle-loader';
+
 export default function Loading() {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
-            <div className="flex flex-col items-center gap-4">
-                <h1 className="text-4xl font-bold tracking-widest text-green-600 animate-pulse">LOADING</h1>
-            </div>
+        <div className="flex h-screen w-full items-center justify-center bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
+            <CircleLoader />
         </div>
     );
 }
