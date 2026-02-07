@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  DONOR
+  RECEIVER
+  ADMIN
+}
+
+enum FoodType {
+  VEG
+  NON_VEG
+  BOTH
+}
+
+enum PostStatus {
+  ACTIVE
+  RESERVED
+  COMPLETED
+  EXPIRED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum TxStatus {
+  IN_PROGRESS
+  WAITING_APPROVAL
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  phone         String?
+  password      String?
+  image         String?
+  role          UserRole  @default(USER)
+  organization  String?
+  address       String?
+  latitude      Float?
+  longitude     Float?
+  
+  posts         FoodPost[]
+  requests      Request[]
+  donations     Transaction[] @relation("DonorTransactions")
+  received      Transaction[] @relation("ReceiverTransactions")
+  
+  chatMessages  ChatMessage[]
+  notifications Notification[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model FoodPost {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  foodType    FoodType
+  quantity    String
+  expiryTime  DateTime
+  images      String[]
+  
+  pickupAddress String
+  pickupLat     Float
+  pickupLng     Float
+  showExactMap  Boolean   @default(false)
+  
+  contactPhone String?
+  
+  status      PostStatus @default(ACTIVE)
+  
+  donorId     String
+  donor       User      @relation(fields: [donorId], references: [id])
+  
+  requests    Request[]
+  transaction Transaction?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Request {
+  id          String        @id @default(cuid())
+  message     String?
+  status      RequestStatus @default(PENDING)
+  
+  postId      String
+  post        FoodPost      @relation(fields: [postId], references: [id])
+  
+  receiverId  String
+  receiver    User          @relation(fields: [receiverId], references: [id])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Transaction {
+  id          String    @id @default(cuid())
+  status      TxStatus  @default(IN_PROGRESS)
+  
+  postId      String    @unique
+  post        FoodPost  @relation(fields: [postId], references: [id])
+  
+  donorId     String
+  donor       User      @relation("DonorTransactions", fields: [donorId], references: [id])
+  
+  receiverId  String
+  receiver    User      @relation("ReceiverTransactions", fields: [receiverId], references: [id])
+
+  chatRoomId  String?   @unique
+  
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  
+  messages    ChatMessage[]
+}
+
+model ChatMessage {
+  id            String      @id @default(cuid())
+  
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  
+  senderId      String
+  sender        User        @relation(fields: [senderId], references: [id])
+  
+  message       String
+  attachments   String[]
+  
+  createdAt     DateTime    @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // INFO, WARNING, SUCCESS
+  message   String
+  link      String?  // URL to redirect to
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

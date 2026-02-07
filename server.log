@@ -1,0 +1,17 @@
+nohup: ignoring input
+
+> karthi@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.14
+  - Local:        http://localhost:3000
+  - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1626ms
+ ✓ Compiled /src/middleware in 171ms (187 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1409ms (857 modules)
+ GET /api/test-cleanup 404 in 1615ms
+ ✓ Compiled in 256ms (351 modules)
+ ✓ Compiled in 446ms (1030 modules)
